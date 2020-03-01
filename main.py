@@ -28,27 +28,38 @@ label_sequence = pad_sequences(label_sequence, maxlen=label_maxlen, padding='pos
 class MyModel(tf.keras.Model):
     def __init__(self):
         super(MyModel, self).__init__()
-        self.d1_abstract = tf.keras.layers.Dense(50, input_shape=(50,), activation='relu')
-        self.d1_label = tf.keras.layers.Dense(15, input_shape=(15,), activation='relu')
-        self.d2 = tf.keras.layers.Dense(30, activation='sigmoid')
-        self.d3 = tf.keras.layers.Dense(1, activation='relu')
-    def call(self, x):
-        x = tf.concat([self.d1_abstract(x[0:50]),self.d1_label(x[50:])],1)
+        self.d1_abstract = tf.keras.layers.Dense(500, activation='relu')
+        self.d1_label = tf.keras.layers.Dense(200, activation='relu')
+        self.d1 = tf.keras.layers.Dense(500, activation='relu') #test to delete
+        self.d2 = tf.keras.layers.Dense(300, activation='relu')
+        self.d3 = tf.keras.layers.Dense(300, activation='relu')
+        self.d4 = tf.keras.layers.Dense(150, activation='relu')
+        self.d5 = tf.keras.layers.Dense(150, activation='relu')
+        self.d6 = tf.keras.layers.Dense(1, activation='sigmoid')
+    def call(self, inputs):
+        # x_abstract , x_label = tf.split(x, [50, 15], 1)
+        # x_abstract = self.d1_abstract(x_abstract)
+        # x_label = self.d1_label(x_label)
+        # x = tf.concat([x_abstract,x_label],1)
+        x = self.d1(inputs)
         x = self.d2(x)
         x = self.d3(x)
+        x = self.d4(x)
+        x = self.d5(x)
+        x = self.d6(x)
         return x
 
 model = MyModel()
-loss_fn = tf.keras.losses.MeanAbsoluteError()
-model.compile(optimizer='adam',
-              loss=loss_fn,
-              metrics=['mse'])
+model.compile(optimizer=keras.optimizers.RMSprop(),
+              loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+              metrics=['accuracy'])
 
 abstract_tensor = tf.convert_to_tensor(abstract_sequence, dtype=tf.float32)
 label_tensor = tf.convert_to_tensor(label_sequence, dtype=tf.float32)
 x_train = tf.concat([abstract_tensor,label_tensor],1)
-y_train = tf.convert_to_tensor(signatures, dtype=tf.float32)
-print(tf.shape(x_train))
-print(tf.shape(y_train))
+signatures_category = [0 if s<50 else 1 for s in signatures]
+y_train = tf.convert_to_tensor(signatures_category, dtype=tf.float32)
+y_train = tf.reshape(y_train, (y_train.shape[0],1))
 
-model.fit(x_train, y_train, batch_size=32, epochs=5)
+
+model.fit(x_train, y_train, batch_size=32, epochs=20, validation_split=0.2, shuffle=True)
