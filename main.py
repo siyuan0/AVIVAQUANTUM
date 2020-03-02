@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import json
 # data prep
-with open('training_data.json', 'rb') as f:
+with open('data/training_data.json', 'rb') as f:
     training_doc = json.load(f)
 tokenizer = Tokenizer(num_words=100)
 tokenizer.fit_on_texts([t['abstract']['_value'] + t['label']['_value'] for t in training_doc])
@@ -28,8 +28,8 @@ label_sequence = pad_sequences(label_sequence, maxlen=label_maxlen, padding='pos
 class MyModel(tf.keras.Model):
     def __init__(self):
         super(MyModel, self).__init__()
-        self.d1_abstract = tf.keras.layers.Dense(500, activation='relu')
-        self.d1_label = tf.keras.layers.Dense(200, activation='relu')
+        # self.d1_abstract = tf.keras.layers.Dense(500, activation='relu')
+        # self.d1_label = tf.keras.layers.Dense(200, activation='relu')
         self.d1 = tf.keras.layers.Dense(500, activation='relu') #test to delete
         self.d2 = tf.keras.layers.Dense(300, activation='relu')
         self.d3 = tf.keras.layers.Dense(300, activation='relu')
@@ -59,7 +59,10 @@ label_tensor = tf.convert_to_tensor(label_sequence, dtype=tf.float32)
 x_train = tf.concat([abstract_tensor,label_tensor],1)
 signatures_category = [0 if s<50 else 1 for s in signatures]
 y_train = tf.convert_to_tensor(signatures_category, dtype=tf.float32)
+print(x_train.shape)
+print(y_train.shape)
 y_train = tf.reshape(y_train, (y_train.shape[0],1))
+print(y_train.shape)
 
 
 model.fit(x_train, y_train, batch_size=32, epochs=20, validation_split=0.2, shuffle=True)
