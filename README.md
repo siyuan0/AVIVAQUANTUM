@@ -1,6 +1,6 @@
 # Siyuan notes
 
-the main run file is in main.py.
+the main run file is in main.py. to run tensorboard to view training progress, open a new seperate terminal, change directory to the current project path and run `tensorboard --logdir log/`. Open the output URL in a browser (IE seems to work best for me).
 
 # AvivaQuantum Data Science hackathon
 
