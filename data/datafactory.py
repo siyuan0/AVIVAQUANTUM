@@ -67,6 +67,7 @@ def dataloader():
     x_val = x_data[10000:]
     y_val = y_data[10000:]
 
+
     train_gen = TextSequence(x_train, y_train, batch_size=5, shuffle=True)
 
     return train_gen, (x_val, y_val)
