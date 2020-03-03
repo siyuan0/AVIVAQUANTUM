@@ -1,3 +1,7 @@
+# Siyuan notes
+
+the main run file is in main.py.
+
 # AvivaQuantum Data Science hackathon
 
 ## How to get started
