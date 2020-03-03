@@ -1,4 +1,6 @@
 import tensorflow as tf
+import os
+import datetime
 from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -13,7 +15,10 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=checkpoint_path, 
     verbose=1, 
     save_weights_only=True,
-    period=10)
+    period=100)
+log_dir = os.path.join('log')
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
 
 model = MyModel()
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
@@ -23,8 +28,8 @@ model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
 train_gen, val_data = dataloader()
 
 model.fit(x=train_gen, 
-          epochs=30,
+          epochs=1000,
           validation_data=val_data,
-          callbacks=[cp_callback])
+          callbacks=[cp_callback, tensorboard_callback],)
 
 # model.save(model_path)

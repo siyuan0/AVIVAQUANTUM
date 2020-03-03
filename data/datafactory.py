@@ -43,7 +43,7 @@ class TextSequence(Sequence):
 def dataloader():
     abstract_text, label_text, signature_sequence = data_temp()
 
-    tokenizer = Tokenizer(num_words=100)
+    tokenizer = Tokenizer()
     tokenizer.fit_on_texts(abstract_text+label_text)
     word_index = tokenizer.word_index # creates the index to convert words to numbers
 
@@ -67,6 +67,6 @@ def dataloader():
     x_val = x_data[10000:]
     y_val = y_data[10000:]
 
-    train_gen = TextSequence(x_train, y_train)
+    train_gen = TextSequence(x_train, y_train, batch_size=5, shuffle=True)
 
     return train_gen, (x_val, y_val)
