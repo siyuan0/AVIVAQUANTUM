@@ -1,5 +1,5 @@
-tensorflow=2.0
-protobuf=3.6.0
+tensorflow==2.0
+protobuf==3.6.0
 gensim
 pyyaml
 h5py
